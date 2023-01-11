@@ -143,6 +143,15 @@ export interface GitEvents {
    *
    **/
   on(event: 'head', listener: (head: HeadData) => void): this;
+
+  /**
+   * @example
+   * repos.on('downloaded', function () { ... }
+   *
+   * Emitted when the repo is downloaded.
+   *
+   **/
+  on(event: 'downloaded', listener: () => void): this;
 }
 export class Git extends EventEmitter implements GitEvents {
   dirMap: (dir?: string) => string;
@@ -484,6 +493,10 @@ export class Git extends EventEmitter implements GitEvents {
             self.emit(evName, action);
             if (!anyListeners) action.accept();
           }
+        });
+
+        action.on('exit', () => {
+          self.emit('downloaded', action);
         });
       },
       (req: http.IncomingMessage, res: http.ServerResponse) => {
