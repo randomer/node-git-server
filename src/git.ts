@@ -1,7 +1,7 @@
 import fs from 'fs';
 
 import path from 'path';
-import http, { ServerOptions } from 'http';
+import http, { RequestListener, ServerOptions } from 'http';
 import https from 'https';
 import url from 'url';
 import qs from 'querystring';
@@ -533,14 +533,14 @@ export class Git extends EventEmitter implements GitEvents {
       options = { type: 'http' };
     }
 
-    const createServer =
-      options.type == 'http'
-        ? http.createServer
-        : https.createServer.bind(this, options);
-
-    this.server = createServer((req, res) => {
+    const requestListener: RequestListener = (req, res) => {
       this.handle(req, res);
-    });
+    };
+
+    this.server =
+      options.type == 'http'
+        ? http.createServer(requestListener)
+        : https.createServer.bind(this, options)(requestListener);
 
     this.server.listen(port, callback);
 
