@@ -34,6 +34,7 @@
     "install": "( [ -f ./git-package.meta ] && [ ! -f ./build-complete.meta ] && echo \"\" > ./build-complete.meta && npm install . && tsc ) || echo \"\" > ./build-complete.meta"
   },
   "dependencies": {
+    "@types/jest": "^29.2.5",
     "through": "^2.3.8"
   },
   "devDependencies": {
